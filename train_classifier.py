@@ -6,7 +6,6 @@ from torch.utils.data import DataLoader
 from utils.models import Classifier
 from utils.dataset import ROIDataset, get_label
 from utils.training import train_model, accuracy, compute_accuracy
-from utils.create_train_val_set import clear_dir, split_train_test
 import torch
 import torch.nn as nn
 from sklearn.metrics import precision_score, recall_score, f1_score
@@ -168,22 +167,22 @@ if __name__ == '__main__':
         batch_size = 512
         train_name=[]
         val_name=[]
-        train_name,val_name=gettrain_val(r'data/train_set2048/train_set2048/train')
-        test_name=gettest(r'data/train_set2048/train_set2048/test')
+        train_name,val_name=gettrain_val(r'data/train')
+        test_name=gettest(r'data/test')
         model = Classifier().to(device)
         # clear_dir(".\\data")
         # split_train_test(".\\data\\json\\ta", ".\\data", 0.2, 0.2)
         # split_train_test(".\\data\\json\\tb", ".\\data", 0.2, 0.2)
         # split_train_test(".\\data\\json\\mi", ".\\data", 0.2, 0.2)
         # split_train_test(".\\data\\json\\si", ".\\data", 0.2, 0.2)
-        train_dataset = ROIDataset(path='data/train_set2048/train_set2048/train',load=train_name, key=get_label, mode='classification', gen_p=0)
+        train_dataset = ROIDataset(path='data/train',load=train_name, key=get_label, mode='classification', gen_p=0)
         train_loader = DataLoader(train_dataset, batch_size=batch_size)
-        val_dataset = ROIDataset(path='data/train_set2048/train_set2048/train',load=val_name, key=get_label, mode='classification', gen_p=0)
+        val_dataset = ROIDataset(path='data/train',load=val_name, key=get_label, mode='classification', gen_p=0)
         val_loader = DataLoader(val_dataset, batch_size=batch_size)
         optimizer = optim.Adam(params=model.parameters(), lr=1e-3)
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=20, eta_min=1e-6)
         criterion = nn.CrossEntropyLoss()
-        test_dataset = ROIDataset(path='data/train_set2048/train_set2048/test',load=test_name, key=get_label, mode='classification', gen_p=0)
+        test_dataset = ROIDataset(path='data/test',load=test_name, key=get_label, mode='classification', gen_p=0)
         test_loader = DataLoader(test_dataset, batch_size=559)
         result = train_model(model, train_loader, val_loader,test_loader, criterion,
                              accuracy, optimizer, 2000, device, scheduler)
