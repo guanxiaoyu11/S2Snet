@@ -3,7 +3,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
-from utils.create_train_val_set import save_data
 import torch
 from torch import Tensor
 from torch.nn import functional as F
